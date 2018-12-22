@@ -17,7 +17,7 @@ This application is a command line interface used to analyse the log data of art
    * Once up to log into newlys installed VM use vagrant ssh.
 
 #### RUN APPLICATION
-1. There is newsdata.sql file which consists of news database. Once logged in create database using "psql -d news -f newsdata.sql"
+1. There is newsdata.zip file unzip it to find newsdata.sql file which consists of news database. Once logged in create database using "psql -d news -f newsdata.sql"
 2. Use "psql news"  command to connect to news database.
 3. Open new terminal window navigate to project folder and perform step 4 from above to connect VM.
 4. run "python reportingtool.py" command to see this reporting tool up and running.
