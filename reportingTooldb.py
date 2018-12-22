@@ -10,9 +10,9 @@ DBNAME = "news"
 def get_topThreeArticles():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute('''Select log.path article, count(log.path) totalViews from
-          articles join log on articles.slug=substring(log.path, 10) and
-          log.status like '%200%' group by log.path order by
+    c.execute('''SELECT articles.title article, count(log.path) totalViews FROM
+          articles JOIN log ON articles.slug=substring(log.path, 10) and
+          log.status LIKE '%200%' GROUP BY articles.title ORDER BY
           count(log.path) desc; ''')
     results = c.fetchall()
     cleaner = Cleaner()
@@ -29,12 +29,12 @@ def get_topThreeArticles():
 def get_popularAuthors():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute('''Select  name, t3.total from authors join
-            (Select t1.author id, sum(val) total from articles t1 join
-            (select path, count(path) val from log where log.status like
-            '%200%' group by path) t2 on t1.slug=substring(t2.path, 10)
-            group by t1.author order by total desc)
-            t3 on authors.id = t3.id;''')
+    c.execute('''SELECT  name, t3.total FROM authors JOIN
+            (SELECT t1.author id, sum(val) total FROM articles t1 JOIN
+            (SELECT path, count(path) val FROM log WHERE log.status LIKE
+            '%200%' GROUP BY path) t2 ON t1.slug=substring(t2.path, 10)
+            GROUP BY t1.author ORDER BY total desc)
+            t3 ON authors.id = t3.id;''')
     results = c.fetchall()
     cleaner = Cleaner()
     cleanResults = []
@@ -50,14 +50,14 @@ def get_popularAuthors():
 def get_answersErrorPercent():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute('''select t3.time, t3.per from (select t1.dateVal as time,
-             (t1.error*100.0/t2.totalCount*1.0) as per from (select
+    c.execute('''SELECT t3.time, t3.per FROM (SELECT t1.dateVal as time,
+             (t1.error*100.0/t2.totalCount*1.0) as per FROM (SELECT
              TO_CHAR(time, 'Monthdd,YYYY') dateVal,count(status) as error
-             from log where status like '%4%' or status like '%5%'
-             group by dateVal) as t1, (select TO_CHAR(time, 'Monthdd,YYYY')
-             dateVal, count(status) as totalCount from log group by
-             dateVal) as t2 where t1.dateVal = t2.dateVal) as t3
-             where t3.per > 1;''')
+             FROM log WHERE status LIKE '%4%' or status LIKE '%5%'
+             GROUP BY dateVal) as t1, (SELECT TO_CHAR(time, 'Monthdd,YYYY')
+             dateVal, count(status) as totalCount FROM log GROUP BY
+             dateVal) as t2 WHERE t1.dateVal = t2.dateVal) as t3
+             WHERE t3.per > 1;''')
     results = c.fetchall()
     cleaner = Cleaner()
     cleanResults = []
