@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from reportingTooldb import get_topThreeArticles
 from reportingTooldb import get_popularAuthors, get_answersErrorPercent
 
